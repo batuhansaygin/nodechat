@@ -110,7 +110,7 @@ chat.on('connection', function(conn) {
                 return conn.write(JSON.stringify({type:'server', info:'spam', warn:clients[conn.id].warn}));
             } else {
                 bans.push([clients[conn.id].ip, Date.now(), 5 * 1000 * 60]);
-                utils.sendToAll(clients, {type:'ban', extra:clients[conn.id].un, message:'Server banned ' + clients[conn.id].un + ' from the server for 5 minutes for spamming the servers'});
+                utils.sendToAll(clients, {type:'ban', extra:clients[conn.id].un, message:'Sunucu ' + clients[conn.id].un + ' adlı kullanıcıyı spam yaptığı için 5 dakika yasakladı.'});
 
                 return conn.close();
             }
@@ -163,7 +163,7 @@ chat.on('connection', function(conn) {
 
 /* Functions */
 function updateUser(id, name) {
-    if(name.length > 2 && name.length < 17 && name.indexOf(' ') < 0 && !utils.checkUser(clients, name) && name.match(alphanumeric) && name != 'Console' && name != 'Sistem') {
+    if(name.length > 2 && name.length < 17 && name.indexOf(' ') < 0 && !utils.checkUser(clients, name) && name.match(alphanumeric) && name != 'Console' && name != 'System') {
         if(clients[id].un == null) {
             clients[id].con.write(JSON.stringify({type:'server', info:'success'}));
             uid++;

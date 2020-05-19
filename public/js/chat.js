@@ -63,10 +63,10 @@ var connect = function() {
         clients = [];
 
         if(connected) {
-            updateBar('mdi-action-autorenew spin', 'Connection lost, reconnecting...', true);
+            updateBar('mdi-action-autorenew spin', 'Bağlantı kesildi, yeniden bağlanıyor ...', true);
 
             timer = setTimeout(function() {
-                console.warn('Connection lost, reconnecting...');
+                console.warn('Bağlantı kesildi, yeniden bağlanıyor ...');
                 connect();
             }, 1500);
         }
@@ -78,9 +78,9 @@ var connect = function() {
         if(dev) {
             console.log(data);
         }
-        
-        
-        
+
+
+
         if(data.type == 'delete') {
             return $('div[data-mid="' + data.message + '"]').remove();
         }
@@ -95,14 +95,14 @@ var connect = function() {
                 }
             }
 
-            
+
             if(usersTyping.length == 1) {
-                string = usersTyping + ' is writing...';
+                string = usersTyping + ' yazıyor...';
             } else if(usersTyping.length > 4) {
-                string = 'Several people are writing...';
+                string = 'Birileri mesaj yazıyor ...';
             } else if(usersTyping.length > 1) {
                 var lastUser = usersTyping.pop();
-                string = usersTyping.join(', ') + ' and ' + lastUser + ' are writing...';
+                string = usersTyping.join(', ') + ' & ' + lastUser + ' yazıyor...';
                 usersTyping.push(lastUser);
             } else {
                 string = '<br>';
@@ -117,19 +117,19 @@ var connect = function() {
                     var message;
 
                     if(data.reason == 'length') {
-                        message = 'Your username must have at least 3 characters and no more than 16 characters';
+                        message = 'Kullanıcı adınız en az 3, en fazla 16 karakterden oluşmalıdır.';
                     }
 
                     if(data.reason == 'format') {
-                        message = 'Your username must only contain alphanumeric characters (numbers, letters and underscores)';
+                        message = 'Kullanıcı adınız yalnızca alfasayısal karakterler (sayılar, harfler ve alt çizgiler) içermelidir.';
                     }
 
                     if(data.reason == 'taken') {
-                        message = 'This username is already taken';
+                        message = 'Bu kullanıcı adı zaten alınmış.';
                     }
 
                     if(data.reason == 'banned') {
-                        message = 'You have been banned from the server for ' + data.time / 60 / 1000 + ' minutes. You have to wait until you get unbanned to be able to connect again';
+                        message = data.time / 60 / 1000 + ' dakika sunucudan yasaklandınız. Tekrar bağlanabilmek için belirtilen süre boyunca beklemeniz gerekir.';
                     }
 
                     showChat('light', null, message);
@@ -151,7 +151,7 @@ var connect = function() {
                     break;
 
                 case 'update':
-                    showChat('info', null, data.user.oldun + ' changed its name to ' + data.user.un);
+                    showChat('info', null, data.user.oldun + ' kullanıcı adını ' + data.user.un + ' olarak değiştirdi. ');
                     clients[data.user.id] = data.user;
                     break;
 
@@ -175,7 +175,7 @@ var connect = function() {
                     break;
 
                 case 'spam':
-                    showChat('global', null, 'Mesajlar arasında 1 saniye beklemeniz gerekir. Spam göndermeye devam etmek, sizi yasaklayabilir. Dikkat ' + data.warn + ' of 5');
+                    showChat('global', null, 'Mesajlar arasında 1 saniye beklemeniz gerekir. Spam göndermeye devam etmek, sizi sunucudan yasaklayabilir. Dikkat: ' + data.warn + ' - 5');
                     break;
 
                 case 'clients':
@@ -198,7 +198,7 @@ var connect = function() {
                 textToSpeech.text = data.message;
                 speechSynthesis.speak(textToSpeech);
             }
-           
+
             showChat(data.type, data.user, data.message, data.subtxt, data.mid);
         }
 
@@ -272,7 +272,7 @@ function showChat(type, user, message, subtxt, mid) {
     var nameclass = '';
 
     if(type == 'global' || type == 'kick' || type == 'ban' || type == 'info' || type == 'light' || type == 'help' || type == 'role') {
-        user = 'System';
+        user = 'Sistem';
     }
 
     if(type == 'me' || type == 'em') {
@@ -298,11 +298,11 @@ function showChat(type, user, message, subtxt, mid) {
     } else {
         $('#panel').append('<div data-mid="' + mid + '" class="' + type + '""><span class="name ' + nameclass + '"><b><a class="namelink" href="javascript:void(0)">' + user + '</a></b></span><span class="timestamp">(' + subtxt + ') ' + getTime() + '</span><span class="msg">' + message + '</span></div>');
     }
-    
+
     $('#panel').animate({scrollTop: $('#panel').prop('scrollHeight')}, 500);
     updateStyle();
     nmr++;
-    
+
     if(settings.inline) {
         var m = message.match(/(https?|ftp):\/\/[^\s/$.?#].[^\s]*/gmi);
 
@@ -408,12 +408,12 @@ function handleInput() {
 
                         showChat('light', 'Error', 'Use /' + command[0] + variables);
                     }
-                    break; 
+                    break;
 
                 case 'clear':
                     nmr = 0;
                     document.getElementById('panel').innerHTML = '';
-                    showChat('light', 'System', 'Messages cleared');
+                    showChat('light', 'System', 'Mesajlar Temizlendi');
                     break;
 
                 case 'shrug':
@@ -433,7 +433,7 @@ function handleInput() {
                     break;
 
                 default:
-                    showChat('light', 'Error', 'Unknown command, use /help to get a list of the available commands');
+                    showChat('light', 'Error', 'Bilinmeyen Komut! Kullanılabilir komutların bir listesini almak için /help yazın.');
                     break;
             }
         } else {
@@ -447,13 +447,13 @@ function handleInput() {
 function getTime() {
     var now = new Date();
     var time = [now.getHours(), now.getMinutes(), now.getSeconds()];
- 
+
     for(var i = 0; i < 3; i++) {
         if(time[i] < 10) {
             time[i] = '0' + time[i];
         }
     }
- 
+
     return time.join(':');
 }
 
@@ -491,7 +491,7 @@ $(document).ready(function() {
                 if(clients[i].role === 0) {
                     admin = '</li>';
                 }
-                
+
                 if(clients[i].role === 1) {
                     admin = ' - <b>Helper</b></li>';
                 }
@@ -594,12 +594,12 @@ $(document).ready(function() {
         settings.synthesis = document.getElementById('synthesis').checked;
         localStorage.settings = JSON.stringify(settings);
     });
-    
+
     $('#inline').bind('change', function() {
         settings.inline = document.getElementById('inline').checked;
         localStorage.settings = JSON.stringify(settings);
     });
-        
+
     $('#desktop').bind('change', function() {
         settings.desktop = document.getElementById('desktop').checked;
         localStorage.settings = JSON.stringify(settings);
@@ -697,7 +697,7 @@ if('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 if(speechToText) {
     speechToText.onresult = function(event) {
         $('#message').val('');
-    
+
         for (var i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
                 $('#message').val(event.results[i][0].transcript);
@@ -710,11 +710,11 @@ if(speechToText) {
             }
         }
     }
-    
+
     speechToText.onerror = function(event) {
         updateBar('mdi-content-send', 'Enter your message here', false);
     }
-   
+
 }
 
 function desktopNotif(message) {
@@ -748,7 +748,7 @@ if(typeof(Storage) !== 'undefined') {
 }
 
 window.onfocus = function() {
-    document.title = 'Node.JS Chat';
+    document.title = 'KIZIL';
     focus = true;
     unread = 0;
 };
